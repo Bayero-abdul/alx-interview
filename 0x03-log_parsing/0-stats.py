@@ -56,4 +56,4 @@ if __name__ == "__main__":
         for code, count in status_codes.items():
             if count > 0:
                 print('{}: {}'.format(code, count))
-         sys.stdin.flush()
+        sys.stdin.flush()
