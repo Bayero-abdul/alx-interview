@@ -40,13 +40,13 @@ if __name__ == "__main__":
                 if status_code in status_codes:
                     status_codes[status_code] += 1
 
-            if line_count == 10:
-                line_count = 0
+                if line_count == 10:
+                    line_count = 0
 
-                print('File size: {}'.format(total_size))
-                for code, count in status_codes.items():
-                    if count > 0:
-                        print('{}: {}'.format(code, count))
+                    print('File size: {}'.format(total_size))
+                    for code, count in status_codes.items():
+                        if count > 0:
+                            print('{}: {}'.format(code, count))
 
             sys.stdin.flush()
     except (KeyboardInterrupt, EOFError) as e:
@@ -56,3 +56,4 @@ if __name__ == "__main__":
         for code, count in status_codes.items():
             if count > 0:
                 print('{}: {}'.format(code, count))
+         sys.stdin.flush()
