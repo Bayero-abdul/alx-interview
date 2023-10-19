@@ -53,7 +53,7 @@ if __name__ == "__main__":
         print()
     finally:
         print('File size: {}'.format(total_size))
-        for code, count in status_codes.items():
-            if count > 0:
-                print('{}: {}'.format(code, count))
+        for code in sorted(status_codes.keys()):
+            if status_codes[code] > 0:
+                print(f'{code}: {status_codes[code]}')
         sys.stdin.flush()
