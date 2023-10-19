@@ -3,49 +3,56 @@
 
 
 import sys
+import re
 
 
-line_count = 0
-total_size = 0
+if __name__ == "__main__":
+    line_count = 0
+    total_size = 0
 
-possible_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
-status_codes = {}
+    possible_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
+    status_codes = {}
 
-try:
-    for line in sys.stdin:
-        if 'Exit' == line.rstrip():
-            break
+    pattern = r'\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} - \[\d{4}-\d{2}-\d{2} '
+    r'\d{2}:\d{2}:\d{2}\.\d+\] \"GET \/projects\/260 HTTP\/1\.1\" \d+ \d+'
 
-        line_args = line.split(' ')
-        file_size = line_args[-1]
-        status_code = line_args[-2]
+    try:
+        for line in sys.stdin:
 
-        # skip line if of not of this format
-        # <IP Address> - [<date>] "GET /projects/260 HTTP/1.1"
-        # <status code> <file size>
-        if len(line_args) != 9:
-            continue
+            match = re.search(pattern, line.strip())
+            if not match:
+                continue
 
-        line_count += 1
-        total_size += int(file_size)
+            line_args = line.strip().split(' ')
+            file_size = line_args[-1]
+            status_code = line_args[-2]
 
-        status_codes[status_code] = status_codes.get(status_code, 0) + 1
+            line_count += 1
+            try:
+                total_size += int(file_size)
+            except ValueError:
+                pass
 
-        if line_count % 10 == 0:
-            line_count = 0
+            status_codes[status_code] = status_codes.get(status_code, 0) + 1
 
-            print('File size: {}'.format(total_size))
-            sorted_codes = dict(
-                sorted(
-                    status_codes.items(),
-                    key=lambda item: item[0]))
-            for k, v in sorted_codes.items():
-                if k in possible_codes:
-                    print('{}: {}'.format(k, v))
+            if line_count % 10 == 0:
+                line_count = 0
 
-except KeyboardInterrupt:
-    print('File size: {}'.format(total_size))
-    sorted_codes = dict(sorted(status_codes.items(), key=lambda item: item[0]))
-    for k, v in sorted_codes.items():
-        if k in possible_codes:
-            print('{}: {}'.format(k, v))
+                print('File size: {}'.format(total_size))
+                sorted_codes = dict(
+                    sorted(
+                        status_codes.items(),
+                        key=lambda item: item[0]))
+                for k, v in sorted_codes.items():
+                    if k in possible_codes:
+                        print('{}: {}'.format(k, v))
+            sys.stdin.flush()
+    except KeyboardInterrupt:
+        print('File size: {}'.format(total_size))
+        sorted_codes = dict(
+            sorted(
+                status_codes.items(),
+                key=lambda item: item[0]))
+        for k, v in sorted_codes.items():
+            if k in possible_codes:
+                print('{}: {}'.format(k, v))
