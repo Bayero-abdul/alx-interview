@@ -12,20 +12,17 @@ def minOperations(n):
         return 0
 
     target = n
-    curr_H = 1
-    prev_H = 1
-    ops = 0
+    clip_board = 0
+    characters = 1
+    no_of_ops = 0
 
-    while curr_H < target:
-
-        if (curr_H * 2) % 2 == 0:
-            prev_H = curr_H
-
-        if target % curr_H:
-            ops += 1
-            curr_H += prev_H
+    while characters < target:
+        if target % characters == 0:
+            no_of_ops += 2
+            clip_board = characters
+            characters *= 2
         else:
-            ops += 2
-            curr_H *= 2
-
-    return ops
+            no_of_ops += 1
+            characters += clip_board
+           
+    return no_of_ops
