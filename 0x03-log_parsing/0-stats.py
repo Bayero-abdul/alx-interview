@@ -17,25 +17,22 @@ if __name__ == "__main__":
     r'\d{2}:\d{2}:\d{2}\.\d+\] \"GET \/projects\/260 HTTP\/1\.1\" \d+ \d+'
 
     try:
-        for line in sys.stdin:
-
+        for line in sys.stdin:  
             match = re.search(pattern, line.strip())
-            if not match:
-                continue
+            if match:
+                line_args = line.strip().split()
+                file_size = line_args[-1]
+                status_code = line_args[-2]
 
-            line_args = line.strip().split(' ')
-            file_size = line_args[-1]
-            status_code = line_args[-2]
+                line_count += 1
+                try:
+                    total_size += int(file_size)
+                except ValueError:
+                    pass
 
-            line_count += 1
-            try:
-                total_size += int(file_size)
-            except ValueError:
-                pass
+                status_codes[status_code] = status_codes.get(status_code, 0) + 1
 
-            status_codes[status_code] = status_codes.get(status_code, 0) + 1
-
-            if line_count % 10 == 0:
+            if line_count == 10:
                 line_count = 0
 
                 print('File size: {}'.format(total_size))
@@ -47,7 +44,9 @@ if __name__ == "__main__":
                     if k in possible_codes:
                         print('{}: {}'.format(k, v))
             sys.stdin.flush()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError) as e:
+        print()
+    finally:
         print('File size: {}'.format(total_size))
         sorted_codes = dict(
             sorted(
