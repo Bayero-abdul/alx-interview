@@ -20,8 +20,10 @@ if __name__ == "__main__":
         '405': 0,
         '500': 0}
 
-    pattern = r'(\w+|\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s*?-\s*?\[\d{4}-\d{2}-\d{2} '
-    r'\d{2}:\d{2}:\d{2}\.\d+\] \"GET \/projects\/260 HTTP\/1\.1\" \d+ \d+'
+    pattern = r'(\w+|\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s*?-\s*?'
+    r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\] \"GET'
+    r'\/projects\/260 HTTP\/1\.1\" \d+ \d+'
+
     try:
         for line in sys.stdin:
             match = re.search(pattern, line.strip())
